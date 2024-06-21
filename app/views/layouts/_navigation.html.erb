@@ -1,0 +1,26 @@
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a class="navbar-brand" href="/">
+            <%= image_tag("crypto_icon.png", :alt => "logo", :size => "32x32", class:"d-inline-block align-text-bottom") %>
+            PORTFOLIO CRYPTO APP
+        </a>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav nav-underline me-auto mb-2 mb-xl-0">
+                <li class="nav-item">
+                    <%= link_to "Home", root_path, class:"nav-link" %>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <%= button_to "Login", login_path, method: :get, class:"btn btn-outline-light me-2" %>
+                <%= button_to "Sign Up", signup_path, method: :get, class:"btn btn-outline-warning me-2" %>
+            </ul>
+        </div>
+    </div>
+</nav>
