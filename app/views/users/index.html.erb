@@ -1,14 +1,15 @@
-<p style="color: green"><%= notice %></p>
+<div class="container mt-5">
+    <div class="row mb-3">
+        <div class="text-center">
+            <h1 class="display-5">Users List</h1>
+        </div>
+    </div>
 
-<h1>Users</h1>
-
-<div id="users">
-  <% @users.each do |user| %>
-    <%= render user %>
-    <p>
-      <%= link_to "Show this user", user %>
-    </p>
-  <% end %>
+    <% @users.each do |user|%>
+        <div class="row mb-5">
+            <div class="col col-10 offset-1 col-lg-6 offset-lg-3">
+                <%= render user %>
+            </div>
+        </div>
+    <%end%>
 </div>
-
-<%= link_to "New user", new_user_path %>
