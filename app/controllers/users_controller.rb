@@ -50,7 +50,7 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy!
     flash[:danger] = "User #{@user.username} and all account infos deleted!"
-    redirect_to users_path
+    redirect_to root_path
   end
 
   private
