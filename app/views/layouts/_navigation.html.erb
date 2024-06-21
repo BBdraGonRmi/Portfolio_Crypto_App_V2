@@ -17,10 +17,16 @@
                 </li>
             </ul>
 
-            <ul class="navbar-nav mb-2 mb-lg-0">
-                <%= button_to "Login", login_path, method: :get, class:"btn btn-outline-light me-2" %>
-                <%= button_to "Sign Up", signup_path, method: :get, class:"btn btn-outline-warning me-2" %>
+            <ul class="navbar-nav mb-2 mb-xl-0">
+                <% if logged_in? %>
+                    <%= button_to "Log Out", logout_path, method: :delete, class:"btn btn-outline-warning me-2" %>
+                <% else%>
+                    <%= button_to "Login", login_path, method: :get, class:"btn btn-outline-light me-2" %>
+                    <%= button_to "Sign Up", signup_path, method: :get, class:"btn btn-outline-warning me-2" %>
+                <% end %>
             </ul>
         </div>
+
+        
     </div>
 </nav>
