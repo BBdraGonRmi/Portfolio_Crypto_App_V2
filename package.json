@@ -1,5 +1,7 @@
 {
-  "name": "app",
+  "name": "portfolio_crypto_app",
+  "licence": "MIT",
+  "packageManager": "yarn@1.22.22",
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "autoprefixer": "^10.4.19",
