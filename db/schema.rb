@@ -10,7 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_23_164402) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_24_143652) do
+  create_table "transactions", force: :cascade do |t|
+    t.datetime "datetime_of_transaction"
+    t.string "operation"
+    t.string "symbol"
+    t.decimal "amount"
+    t.decimal "price"
+    t.decimal "net_value"
+    t.decimal "fees"
+    t.decimal "total_value"
+    t.integer "user_id", null: false
+    t.integer "wallet_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_transactions_on_user_id"
+    t.index ["wallet_id"], name: "index_transactions_on_wallet_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username"
     t.string "email"
@@ -27,5 +44,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_23_164402) do
     t.index ["user_id"], name: "index_wallets_on_user_id"
   end
 
+  add_foreign_key "transactions", "users"
+  add_foreign_key "transactions", "wallets"
   add_foreign_key "wallets", "users"
 end
