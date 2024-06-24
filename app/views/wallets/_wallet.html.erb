@@ -1,12 +1,28 @@
-<div id="<%= dom_id wallet %>">
-  <p>
-    <strong>Name:</strong>
-    <%= wallet.name %>
-  </p>
-
-  <p>
-    <strong>User:</strong>
-    <%= wallet.user_id %>
-  </p>
-
+<div class="card">
+    <div class="card-header">
+        <p class="card-text">
+            <strong>Created_at:</strong>
+            <%= wallet.created_at %>
+        </p>
+        <% if wallet.updated_at != wallet.created_at %>
+            <p class="card-text">
+                <strong>Updated_at:</strong>
+                <%= wallet.updated_at %>
+            </p>
+        <% end %>
+    </div>
+    <div class="card-body">
+        <div class="d-flex flex-row">
+            <%= link_to "Edit", edit_wallet_path(wallet), 
+                                    class: "btn btn-warning mb-1 me-2" 
+                                    %>
+            <% if current_user == wallet.user %>
+                <%= button_to "Delete", @wallet,  
+                                        method: :delete, 
+                                        data: { confirm: "Are you sure ?" },
+                                        class: " btn btn-danger mb-1 me-2" 
+                                        %>
+            <% end %>
+        </div>
+    </div>
 </div>
