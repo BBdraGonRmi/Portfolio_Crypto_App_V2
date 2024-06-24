@@ -1,27 +1,18 @@
+<%= render 'shared/errors', object: @wallet %>
+
 <%= form_with(model: wallet) do |form| %>
-  <% if wallet.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(wallet.errors.count, "error") %> prohibited this wallet from being saved:</h2>
-
-      <ul>
-        <% wallet.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+    <div class="row mb-3">
+        <label class="col-2 col-form-label">
+            <%= form.label :name, style: "display: block" %>
+        </label>
+        <div class="col-5">
+            <%= form.text_field :name, class: "form-control", placeholder: "title" %>
+        </div>
     </div>
-  <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
+    <div class="row mb-3">
+        <div class="offset-2">
+            <%= form.submit class: "btn btn-warning" %>
+        </div>
+    </div>
 <% end %>
