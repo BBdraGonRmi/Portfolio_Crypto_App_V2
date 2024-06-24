@@ -2,6 +2,9 @@ class Transaction < ApplicationRecord
   belongs_to :user
   belongs_to :wallet
 
+  before_validation :set_fees_and_total_value
+  before_save { self.symbol.upcase! }
+
   validates :user_id, presence: true
   validates :wallet_id, presence: true
 
@@ -27,4 +30,15 @@ class Transaction < ApplicationRecord
 
   validates :total_value, presence: true,
                           numericality: true
+
+  private
+
+    def set_fees_and_total_value
+      if !self.fees.present?
+        self.fees = 0
+        if !self.total_value.present?
+          self.total_value = self.net_value
+        end
+      end
+    end
 end
