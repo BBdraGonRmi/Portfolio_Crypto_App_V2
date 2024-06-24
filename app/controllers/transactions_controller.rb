@@ -29,7 +29,7 @@ class TransactionsController < ApplicationController
     @transaction.user = current_user
     if @transaction.save
       flash[:success] = "Transaction added!"
-      redirect_to transaction_path(transaction)
+      redirect_to transaction_path(@transaction)
     else
       render 'new', status: :unprocessable_entity
     end
@@ -39,7 +39,7 @@ class TransactionsController < ApplicationController
   def update
     if @transaction.update(transaction_params)
       flash[:success] = "Transaction updated!"
-      redirect_to transaction_path(transaction)
+      redirect_to transaction_path(@transaction)
     else
       render 'new', status: :unprocessable_entity
     end
