@@ -17,6 +17,7 @@
                 <tr class="table-dark">
                     <th scope="col">Date</th>
                     <th scope="col">Time</th>
+                    <th scope="col">Wallet</th>
                     <th scope="col">Token</th>
                     <th scope="col">Operation</th>
                     <th scope="col">Price</th>
@@ -33,6 +34,7 @@
                         <tr>
                             <td><%= transaction.datetime_of_transaction.to_date %></td>
                             <td><%= transaction.datetime_of_transaction.to_fs(:time) %></td>
+                            <td><%= transaction.wallet.name %></td>
                             <td><%= transaction.symbol %></td>
                             <td><%= transaction.operation %></td>
                             <td><%= transaction.price %></td>
