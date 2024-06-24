@@ -1,5 +1,9 @@
 class WalletsController < ApplicationController
-  before_action :set_wallet, only: %i[ show edit update destroy ]
+
+  # index / show / new / edit / create / update / destroy
+  before_action :set_wallet, only: [:edit, :update, :show, :destroy]
+  before_action :require_user
+  before_action :require_same_user, only: [:edit, :update, :destroy, :show]
 
   # GET /wallets or /wallets.json
   def index
@@ -22,39 +26,30 @@ class WalletsController < ApplicationController
   # POST /wallets or /wallets.json
   def create
     @wallet = Wallet.new(wallet_params)
-
-    respond_to do |format|
-      if @wallet.save
-        format.html { redirect_to wallet_url(@wallet), notice: "Wallet was successfully created." }
-        format.json { render :show, status: :created, location: @wallet }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @wallet.errors, status: :unprocessable_entity }
-      end
+    @wallet.user = current_user
+    if @wallet.save
+      flash[:success] = "Wallet created!"
+      redirect_to wallet_path(@wallet)
+    else
+      render 'new', status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /wallets/1 or /wallets/1.json
   def update
-    respond_to do |format|
-      if @wallet.update(wallet_params)
-        format.html { redirect_to wallet_url(@wallet), notice: "Wallet was successfully updated." }
-        format.json { render :show, status: :ok, location: @wallet }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @wallet.errors, status: :unprocessable_entity }
-      end
+    if @wallet.update(wallet_params)
+      flash[:success] = "Wallet updated!"
+      redirect_to wallet_path(@wallet)
+    else
+      render 'edit', status: :unprocessable_entity
     end
   end
 
   # DELETE /wallets/1 or /wallets/1.json
   def destroy
     @wallet.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to wallets_url, notice: "Wallet was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    flash[:danger] = "Wallet deleted!"
+    redirect_to wallets_path
   end
 
   private
@@ -66,5 +61,12 @@ class WalletsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def wallet_params
       params.require(:wallet).permit(:name, :user_id)
+    end
+
+    def require_same_user
+      if current_user != @wallet.user
+        flash[:danger] = "You don't have the rights for this!"
+        redirect_to root_path
+      end
     end
 end
