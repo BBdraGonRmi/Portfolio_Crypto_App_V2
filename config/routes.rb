@@ -19,4 +19,7 @@ Rails.application.routes.draw do
 
   get 'upload', to: 'transactions#upload'
   post 'import', to: 'transactions#import'
+
+  get 'tokens/infos/:symbol', to: 'tokens#show_token_infos'
+  get 'tokens/list', to: 'tokens#list_tokens'
 end
