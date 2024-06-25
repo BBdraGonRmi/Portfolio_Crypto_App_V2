@@ -19,4 +19,6 @@ Rails.application.routes.draw do
 
   get 'upload', to: 'transactions#upload'
   post 'import', to: 'transactions#import'
+
+  get 'dashboard', to: 'pages#dashboard'
 end
