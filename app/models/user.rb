@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  has_many :transactions, dependent: :destroy
+  has_many :wallets, dependent: :destroy
+
   before_save { self.email.downcase! }
 
   validates :username, presence: true,
