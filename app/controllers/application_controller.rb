@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  require 'csv'
+
   helper_method :current_user, :logged_in?
 
   def current_user

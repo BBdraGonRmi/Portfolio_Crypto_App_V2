@@ -35,6 +35,43 @@ class TransactionsController < ApplicationController
     end
   end
 
+  # POST transactions/import
+  def import
+    file = params[:file]
+    wallet_id = params[:wallet_id]
+    user_id = current_user.id
+
+    if file.nil?
+      flash[:warning] = "Please select a CSV file to upload."
+      render 'upload', status: :unprocessable_entity
+      return
+    end
+
+    begin
+      CSV.foreach(file.path, headers: true) do |row|
+        transaction_hash = row.to_hash
+        # Assuming the CSV headers match the Transaction model attributes
+        Transaction.create!(
+          user_id: user_id,
+          wallet_id: wallet_id,
+          datetime_of_transaction: transaction_hash['datetime_of_transaction'],
+          operation: transaction_hash['operation'],
+          symbol: transaction_hash['symbol'],
+          amount: transaction_hash['amount'],
+          price: transaction_hash['price'],
+          net_value: transaction_hash['net_value'],
+          fees: transaction_hash['fees'],
+          total_value: transaction_hash['total_value']
+        )
+      end
+      flash[:success] = "Transactions successfully uploaded."
+      redirect_to transactions_path
+    rescue => errors
+      flash[:danger] = "An error occurred while importing transactions: #{errors}"
+      render 'upload', status: :unprocessable_entity
+    end
+  end
+
   # PATCH/PUT /transactions/1 or /transactions/1.json
   def update
     if @transaction.update(transaction_params)
@@ -43,6 +80,11 @@ class TransactionsController < ApplicationController
     else
       render 'new', status: :unprocessable_entity
     end
+  end
+
+  # GET transactions/upload
+  def upload
+    @transaction = Transaction.new
   end
 
   # DELETE /transactions/1 or /transactions/1.json
