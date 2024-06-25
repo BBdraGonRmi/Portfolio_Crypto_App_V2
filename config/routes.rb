@@ -19,4 +19,9 @@ Rails.application.routes.draw do
 
   get 'upload', to: 'transactions#upload'
   post 'import', to: 'transactions#import'
+
+
+  get 'cryptos/price/:symbol', to: 'cryptos#show_price'
+  get 'cryptos/list', to: 'cryptos#show_coins_list'
+  get 'cryptos/price_by_id/:id', to: 'cryptos#show_price_by_id'
 end
