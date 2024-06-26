@@ -5,27 +5,54 @@ class PagesController < ApplicationController
 
   def dashboard
 
-    @total_balance = Transaction.where(user_id: current_user.id).sum(:total_value)
-
+    @total_balance = 0
     @symbols = Transaction.where(user_id: current_user.id).select(:symbol).distinct.pluck(:symbol)
+
     @data = @symbols.map do |symbol|
       transactions = Transaction.where(user_id: current_user.id).for_symbol(symbol)
+
+      token_current_price = get_current_price(symbol)
+      token_average_buy_price = Transaction.average_buy_price(transactions)
+      token_average_sell_price = Transaction.average_sell_price(transactions)
+      token_balance = Transaction.balance(transactions)
+
+      if Float(token_current_price, exception: false)
+        token_current_price = token_current_price.to_f
+        token_balance_in_dollars = token_balance * token_current_price
+        token_potential_profits = token_balance * (token_current_price - token_average_buy_price)
+        @total_balance += token_balance_in_dollars
+      else
+        token_balance_in_dollars = nil
+        token_potential_profits = nil
+      end
+
       {
         symbol: symbol,
-        average_buy_price: Transaction.average_buy_price(transactions),
-        average_sell_price: Transaction.average_sell_price(transactions),
-        balance: Transaction.balance(transactions),
-        balance_in_dollars: Transaction.balance_in_dollars(transactions, get_current_price(symbol))
+        current_price: token_current_price,
+        average_buy_price: token_average_buy_price,
+        average_sell_price: token_average_sell_price,
+        balance: token_balance,
+        balance_in_dollars: token_balance_in_dollars,
+        potential_profits: token_potential_profits
       }
+    end
+
+    @data.each do |token|
+
+      if Float(token[:current_price], exception: false)
+        token[:portfolio_percentage] = ((token[:balance] * token[:current_price]) / @total_balance) * 100
+      else
+        token[:portfolio_percentage] = nil
+      end
     end
   end
 
   private
 
     def get_current_price(symbol)
-      # Implement a method to get the current price of the symbol
-      # This could be a call to an external API or a value from your database
-      # For now, let's just return a dummy value
-      3400.0
+      service = CoinloreService.new
+      current_price = service.get_current_price_by_symbol(symbol)
+
+      return current_price
     end
 end

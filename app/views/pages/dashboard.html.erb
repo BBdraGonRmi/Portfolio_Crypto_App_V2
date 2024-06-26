@@ -7,7 +7,7 @@
                 </div>
                 <div class="card-body">
                     <p class="card-text text-end">
-                        <strong>$<%= @total_balance %></strong>
+                        <strong><%= number_to_currency(@total_balance) %></strong>
                     </p>
                 </div>
             </div>
@@ -39,13 +39,13 @@
                                 <% @data.each do |data| %>
                                     <tr>
                                         <td><%= data[:symbol] %></td>
-                                        <td>$####</td>
+                                        <td><%= number_to_currency(data[:current_price]) %></td>
                                         <td><%= number_to_currency(data[:average_buy_price]) %></td>
                                         <td><%= number_to_currency(data[:average_sell_price]) %></td>
                                         <td><%= data[:balance].ceil(4) %></td>
                                         <td><%= number_to_currency(data[:balance_in_dollars]) %></td>
-                                        <td>$####</td>
-                                        <td>$####</td>
+                                        <td><%= number_to_currency(data[:potential_profits]) %></td>
+                                        <td><%= number_to_percentage(data[:portfolio_percentage], precision: 2) %></td>
                                     </tr>
                                 <% end %>
                             </tbody>

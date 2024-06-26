@@ -49,4 +49,18 @@ class CoinloreService
     get_cached_tokens_list.nil? ? tokens = fetch_tokens_list : tokens = get_cached_tokens_list
     tokens.select { |token| token['symbol'] == symbol.upcase }
   end
+
+  def get_current_price_by_symbol(symbol)
+    tokens = find_tokens_by_symbol(symbol)
+
+    if tokens.size == 1
+      current_price = tokens[0]["price_usd"]
+    elsif tokens.size > 1
+      current_price = 'Multiple prices found'
+    else
+      current_price = 'Price not found'
+    end
+
+    return current_price
+  end
 end
