@@ -37,9 +37,6 @@ class PagesController < ApplicationController
       }
     end
 
-    @data.delete_if { |token| token[:balance_in_dollars] == nil || token[:balance_in_dollars] <= 0 }
-    @data.sort_by! { |token| token[:balance_in_dollars] }.reverse!
-
     @tokens_data.delete_if { |token| token[:balance_in_dollars] == nil || token[:balance_in_dollars] <= 0 }
     @tokens_data.sort_by! { |token| token[:balance_in_dollars] }.reverse!
 
@@ -63,27 +60,5 @@ class PagesController < ApplicationController
       current_price = service.get_current_price_by_symbol(symbol)
 
       return current_price
-    end
-
-    def fill_missing_months_with_last_value(transactions, transactions_data)
-      return if transactions.empty?
-
-      current_value = 0
-      last_known_date = nil
-
-      transactions.each do |transaction|
-        current_value += transaction.net_value
-        date = transaction.datetime_of_transaction.to_date
-
-        # Fill missing months with last known value
-        if last_known_date && date > last_known_date
-          (last_known_date + 1.month..date.prev_month).each do |missing_date|
-            transactions_data[missing_date] = current_value
-          end
-        end
-
-        transactions_data[date] = current_value
-        last_known_date = date
-      end
     end
 end
