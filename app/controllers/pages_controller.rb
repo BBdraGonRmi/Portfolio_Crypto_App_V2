@@ -6,10 +6,12 @@ class PagesController < ApplicationController
   def dashboard
 
     @total_balance = 0
-    @symbols = Transaction.where(user_id: current_user.id).select(:symbol).distinct.pluck(:symbol)
+    @user_transactions = Transaction.where(user_id: current_user.id)
+
+    @symbols = @user_transactions.select(:symbol).distinct.pluck(:symbol)
 
     @tokens_data = @symbols.map do |symbol|
-      transactions = Transaction.where(user_id: current_user.id).for_symbol(symbol)
+      transactions = @user_transactions.for_symbol(symbol)
 
       token_current_price = get_current_price(symbol)
       token_average_buy_price = Transaction.average_buy_price(transactions)
@@ -36,6 +38,10 @@ class PagesController < ApplicationController
         potential_profits: token_potential_profits
       }
     end
+
+    @total_deposits = @user_transactions.where( operation: "DEPOSIT").sum(:net_value)
+    @total_withdraws = @user_transactions.where( operation: "WITHDRAW").sum(:net_value).abs
+    @profits_and_losses = (@total_withdraws + @total_balance) - @total_deposits
 
     @tokens_data.delete_if { |token| token[:balance_in_dollars] == nil || token[:balance_in_dollars] <= 0 }
     @tokens_data.sort_by! { |token| token[:balance_in_dollars] }.reverse!
