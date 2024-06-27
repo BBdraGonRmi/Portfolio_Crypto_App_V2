@@ -54,7 +54,7 @@ class CoinloreService
     tokens = find_tokens_by_symbol(symbol)
 
     if tokens.size == 1
-      current_price = tokens[0]["price_usd"]
+      current_price = tokens[0]["price_usd"].to_f
     elsif tokens.size > 1
       current_price = 'Multiple prices found'
     else

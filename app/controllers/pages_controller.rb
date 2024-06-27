@@ -16,8 +16,8 @@ class PagesController < ApplicationController
       token_average_sell_price = Transaction.average_sell_price(transactions)
       token_balance = Transaction.balance(transactions)
 
-      if Float(token_current_price, exception: false)
-        token_current_price = token_current_price.to_f
+      if Float(token_current_price, exception: false) && Float(token_average_buy_price, exception: false)
+        token_current_price = token_current_price
         token_balance_in_dollars = token_balance * token_current_price
         token_potential_profits = token_balance * (token_current_price - token_average_buy_price)
         @total_balance += token_balance_in_dollars
@@ -37,9 +37,13 @@ class PagesController < ApplicationController
       }
     end
 
-    @data.each do |token|
+    @data.delete_if { |token| token[:balance_in_dollars] == nil || token[:balance_in_dollars] <= 0 }
+    @data.sort_by! { |token| token[:balance_in_dollars] }.reverse!
 
-      if Float(token[:current_price], exception: false)
+    @data.each do |token|
+      Rails.logger.info "CURRENT_PRICE: #{token[:symbol]}: #{token[:current_price].class}"
+
+      if Float(token[:current_price], exception: false) && Float(token[:balance], exception: false)
         token[:portfolio_percentage] = ((token[:balance] * token[:current_price]) / @total_balance) * 100
       else
         token[:portfolio_percentage] = nil
