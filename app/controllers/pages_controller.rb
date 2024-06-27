@@ -8,7 +8,7 @@ class PagesController < ApplicationController
     @total_balance = 0
     @symbols = Transaction.where(user_id: current_user.id).select(:symbol).distinct.pluck(:symbol)
 
-    @data = @symbols.map do |symbol|
+    @tokens_data = @symbols.map do |symbol|
       transactions = Transaction.where(user_id: current_user.id).for_symbol(symbol)
 
       token_current_price = get_current_price(symbol)
@@ -19,7 +19,7 @@ class PagesController < ApplicationController
       if Float(token_current_price, exception: false) && Float(token_average_buy_price, exception: false)
         token_current_price = token_current_price
         token_balance_in_dollars = token_balance * token_current_price
-        token_potential_profits = token_balance * (token_current_price - token_average_buy_price)
+        token_potential_profits = token_balance * (token_current_price - token_average_buy_price.to_f)
         @total_balance += token_balance_in_dollars
       else
         token_balance_in_dollars = nil
@@ -40,11 +40,16 @@ class PagesController < ApplicationController
     @data.delete_if { |token| token[:balance_in_dollars] == nil || token[:balance_in_dollars] <= 0 }
     @data.sort_by! { |token| token[:balance_in_dollars] }.reverse!
 
-    @data.each do |token|
-      Rails.logger.info "CURRENT_PRICE: #{token[:symbol]}: #{token[:current_price].class}"
+    @tokens_data.delete_if { |token| token[:balance_in_dollars] == nil || token[:balance_in_dollars] <= 0 }
+    @tokens_data.sort_by! { |token| token[:balance_in_dollars] }.reverse!
+
+    @portfolio_distribution = {}
+
+    @tokens_data.each do |token|
 
       if Float(token[:current_price], exception: false) && Float(token[:balance], exception: false)
         token[:portfolio_percentage] = ((token[:balance] * token[:current_price]) / @total_balance) * 100
+        @portfolio_distribution[token[:symbol]] = token[:portfolio_percentage]
       else
         token[:portfolio_percentage] = nil
       end
@@ -58,5 +63,27 @@ class PagesController < ApplicationController
       current_price = service.get_current_price_by_symbol(symbol)
 
       return current_price
+    end
+
+    def fill_missing_months_with_last_value(transactions, transactions_data)
+      return if transactions.empty?
+
+      current_value = 0
+      last_known_date = nil
+
+      transactions.each do |transaction|
+        current_value += transaction.net_value
+        date = transaction.datetime_of_transaction.to_date
+
+        # Fill missing months with last known value
+        if last_known_date && date > last_known_date
+          (last_known_date + 1.month..date.prev_month).each do |missing_date|
+            transactions_data[missing_date] = current_value
+          end
+        end
+
+        transactions_data[date] = current_value
+        last_known_date = date
+      end
     end
 end

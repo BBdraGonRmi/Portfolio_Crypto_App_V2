@@ -12,6 +12,17 @@
                 </div>
             </div>
         </div>
+
+        <div class="col">
+            <div class="card">
+                <div class="card-header text-bg-dark">
+                    <h5 class="card-title">Portfolio distribution:</h5>
+                </div>
+                <div class="card-body">
+                    <%= pie_chart @portfolio_distribution, round: 2, zeros: true, suffix: "%", donut: true %>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row mb-5">
@@ -36,7 +47,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% @data.each do |data| %>
+                                <% @tokens_data.each do |data| %>
                                     <tr>
                                         <td><%= data[:symbol] %></td>
                                         <td><%= number_to_currency(data[:current_price]) %></td>
@@ -53,12 +64,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <div>
-                <%= link_to "New transaction", new_transaction_path, class: "btn btn-warning" %>
         </div>
     </div>
 </div>
