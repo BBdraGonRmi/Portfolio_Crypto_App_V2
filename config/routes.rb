@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   root 'pages#home'
 
   get "signup", to: "users#new"
+  get "profil", to: "users#show"
 
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
