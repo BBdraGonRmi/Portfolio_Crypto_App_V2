@@ -2,14 +2,11 @@
     <div class="row text-center mb-5">
         <h1 class="display-5"><%= @wallet.name %></h1>
     </div>
-    <div class="row mb-5">
-        <div class="col col-md-6 offset-md-3">
-            <%= render @wallet %>
-        </div>
-    </div>
+    
+    <%= render @wallet %>
 
     <div class="row">
-        <div class="col col-4 offset-3">
+        <div class="col col-4">
             <%= link_to "Back to wallets", wallets_path, 
                                 class: "btn btn-outline-secondary mb-1"
                                 %>
