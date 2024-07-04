@@ -8,14 +8,4 @@
             <%= render @user %>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col offset-1 offset-lg-3">
-            <% if logged_in? %>
-                <%= link_to "Back to users", users_path, 
-                                            class: "btn btn-outline-secondary mb-1"
-                                            %>
-            <% end %>
-        </div>
-    </div>
 </div>
